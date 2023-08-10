@@ -44,14 +44,14 @@ chi = 10;
 ty=0;
 ny=1;
 phi=1;
-U=1;
+U=0;
 nbetween=9;
 TotEnerAll={};
 sumnumAll={};
 entAll={};
 
-for ntry = 1:1:nbetween
-    theta = pi/(2*(nbetween-1))*(ntry-1);
+for ntry = 1:1:1
+    theta = pi/2;
     ty=sin(theta);
     U=cos(theta);
     
@@ -64,8 +64,8 @@ for ntry = 1:1:nbetween
         n(i+1,i+1)=i;
     end
     
-    for y=1:simnum
-      mu=0+y/simnum*scaleForSimArea;
+    for y=1:1
+      mu=0;
       for x=1:simnum
         tx=0+x/simnum*scaleForSimArea;
         [A,sWeight,B,E] = BH(U,tx,ty,mu,ny,Nsites,locald,phi,chi);
@@ -101,31 +101,28 @@ end
 
 %% Plot phase diagram
 tgrid=1/simnum*scaleForSimArea:1/simnum*scaleForSimArea:1*scaleForSimArea;
-mugrid=1/simnum*scaleForSimArea:1/simnum*scaleForSimArea:1*scaleForSimArea;
-[tt,mumu]=meshgrid(tgrid,mugrid);
-surf(mumu,tt,TotEnerAll{4});
+% mugrid=1/simnum*scaleForSimArea:1/simnum*scaleForSimArea:1*scaleForSimArea;
+plot(tgrid,TotEnerAll{1});
 xlabel('Constant t');
-ylabel('Constant mu');
-zlabel('total gs energy')
-title('total gs energy change with t,mu')
+% ylabel('Constant mu');
+ylabel('total gs energy')
+title('total gs energy change with t')
 %% Plot2
 tgrid=1/simnum*scaleForSimArea:1/simnum*scaleForSimArea:1*scaleForSimArea;
-mugrid=1/simnum*scaleForSimArea:1/simnum*scaleForSimArea:1*scaleForSimArea;
-[tt,mumu]=meshgrid(tgrid,mugrid);
-surf(mumu,tt,entAll{4});
+% mugrid=1/simnum*scaleForSimArea:1/simnum*scaleForSimArea:1*scaleForSimArea;
+plot(tgrid,entAll{1})
 xlabel('Constant t');
-ylabel('Constant mu');
-zlabel('entanglement entropy')
-title('entanglement entropy change with t,mu')
+% ylabel('Constant mu');
+ylabel('entanglement entropy')
+title('entanglement entropy change with t')
 %% Plot3
 tgrid=1/simnum*scaleForSimArea:1/simnum*scaleForSimArea:1*scaleForSimArea;
-mugrid=1/simnum*scaleForSimArea:1/simnum*scaleForSimArea:1*scaleForSimArea;
-[tt,mumu]=meshgrid(tgrid,mugrid);
-surf(mumu,tt,sumnumAll{4});
+% mugrid=1/simnum*scaleForSimArea:1/simnum*scaleForSimArea:1*scaleForSimArea;
+plot(tgrid,sumnumAll{1});
 xlabel('Constant t');
-ylabel('Constant mu');
-zlabel('Total particle number in this chains')
-title('Total particle number change with t,mu')
+% ylabel('Constant mu');
+ylabel('Total particle number in this chains')
+title('Total particle number change with t')
 
 % %% test of superfluid density
 % clear all;
