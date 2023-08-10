@@ -45,13 +45,13 @@ ty=0;
 ny=1;
 phi=1;
 U=1;
-nbetween=4;
+nbetween=9;
 TotEnerAll={};
 sumnumAll={};
 entAll={};
 
-for ntry = 4:1:4
-    theta = pi/(2*nbetween)*ntry;
+for ntry = 1:1:nbetween
+    theta = pi/(2*(nbetween-1)*(ntry-1);
     ty=sin(theta);
     U=cos(theta);
     
