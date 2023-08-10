@@ -48,9 +48,9 @@ MT=ncon({M,T},{[-1,1,-3,2],[1,-2,2,-4]});
 
 %For open boundary 
 %open boundary condition
-ML = reshape([0,0,0,1],[4,1,1]);
-MR = reshape([1,0,0,0],[4,1,1]);
-MT=M;
+% ML = reshape([0,0,0,1],[4,1,1]);
+% MR = reshape([1,0,0,0],[4,1,1]);
+% MT=M;
 
 % Initialize MPS tensors
 A = {};
