@@ -51,7 +51,7 @@ sumnumAll={};
 entAll={};
 
 for ntry = 1:1:nbetween
-    theta = pi/(2*(nbetween-1)*(ntry-1);
+    theta = pi/(2*(nbetween-1))*(ntry-1);
     ty=sin(theta);
     U=cos(theta);
     
