@@ -44,7 +44,7 @@ M1(4,1,:,:) = -2*ty*n;
 T(1,2,:,:) = -tx*b;
 T(1,3,:,:) = -tx*b';
 T(1,4,:,:) = eye(chid);
-MT=ncon({M,T},{[-1,1,-3,2],[1,-2,2,-4]});
+MT=ncon({M+M1*cos(2*pi*ny/Nsites-2*pi*phi*(Nsites)),T},{[-1,1,2,-4],[1,-2,-3,2]});
 
 %For open boundary 
 %open boundary condition

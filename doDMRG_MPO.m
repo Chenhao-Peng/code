@@ -57,7 +57,7 @@ for p = 1:Nsites - 1
     [qtemp,rtemp] = qr(reshape(A{p},[chil*chid,chir]),0);
     A{p} = reshape(qtemp,[chil,chid,chir]);
     A{p+1} = ncon({rtemp,A{p+1}},{[-1,1],[1,-2,-3]})/norm(rtemp(:));   
-    L{p+1} = ncon({L{p},M+M1*cos(2*pi*ny/Nsites-2*pi*phi*(p+1)),A{p},conj(A{p})},{[2,1,4],[2,-1,3,5],[4,5,-3],[1,3,-2]});
+    L{p+1} = ncon({L{p},M+M1*cos(2*pi*ny/Nsites-2*pi*phi*(p)),A{p},conj(A{p})},{[-1,2,1,4],[2,-2,3,5],[4,5,-4],[1,3,-3]});
 end
 chil = size(A{Nsites},1); chir = size(A{Nsites},3);
 [qtemp,stemp] = qr(reshape(A{Nsites},[chil*chid,chir]),0);
@@ -79,7 +79,11 @@ for k = 1:OPTS.numsweeps+1
         chil = size(A{p},1); chir = size(A{p+1},3);
         psiGround = reshape(ncon({A{p},A{p+1},sWeight{p+2}},{[-1,-2,1],[1,-3,2],[2,-4]}),[chil*chid^2*chir,1]);
         if OPTS.updateon 
+            if p+1 == Nsites
+            [psiGround,Ekeep(end+1)] = eigLanczos(psiGround,OPTS,@doApplyMPO,{L{p},M+M1*cos(2*pi*ny/Nsites-2*pi*phi*(p)),MT,R{p+1}});
+            else
             [psiGround,Ekeep(end+1)] = eigLanczos(psiGround,OPTS,@doApplyMPO,{L{p},M+M1*cos(2*pi*ny/Nsites-2*pi*phi*(p)),M+M1*cos(2*pi*ny/Nsites-2*pi*phi*(p+1)),R{p+1}});
+            end
         end
         [utemp,stemp,vtemp] = svd(reshape(psiGround,[chil*chid,chid*chir]),'econ');
         chitemp = min(min(size(stemp)),chimax);
@@ -88,8 +92,13 @@ for k = 1:OPTS.numsweeps+1
         B{p+1} = reshape(vtemp(:,1:chitemp)',[chitemp,chid,chir]);
             
         %%%%% new block Hamiltonian MPO
-        R{p} = ncon({M+M1*cos(2*pi*ny/Nsites-2*pi*phi*(p)),R{p+1},B{p+1},conj(B{p+1})},{[-1,2,3,5],[2,1,4],[-3,5,4],[-2,3,1]});
-        
+%       R{p} = ncon({M+M1*cos(2*pi*ny/Nsites-2*pi*phi*(p)),R{p+1},B{p+1},conj(B{p+1})},{[-2,2,3,5],[-1,2,1,4],[-4,5,4],[-3,3,1]});         
+        if p+1 == Nsites
+             R{p} = ncon({MT,R{p+1},B{p+1},conj(B{p+1})},{[-2,2,3,5],[-1,2,1,4],[-4,5,4],[-3,3,1]});
+        else
+             R{p} = ncon({M+M1*cos(2*pi*ny/Nsites-2*pi*phi*(p)),R{p+1},B{p+1},conj(B{p+1})},{[-2,2,3,5],[-1,2,1,4],[-4,5,4],[-3,3,1]});
+        end
+
        %%%%% display energy
         if OPTS.display == 2
             fprintf('Sweep: %2.1d of %2.1d, Loc: %2.1d, Energy: %12.12d\n',k,OPTS.numsweeps,p,Ekeep(end));
@@ -109,7 +118,11 @@ for k = 1:OPTS.numsweeps+1
         chil = size(B{p},1); chir = size(B{p+1},3);
         psiGround = reshape(ncon({sWeight{p},B{p},B{p+1}},{[-1,1],[1,-2,2],[2,-3,-4]}),[chil*chid^2*chir,1]);
         if OPTS.updateon 
-            [psiGround,Ekeep(end+1)] = eigLanczos(psiGround,OPTS,@doApplyMPO,{L{p},M+M1*cos(2*pi*ny/Nsites-2*pi*phi*(p)),M+M1*cos(2*pi*ny/Nsites-2*pi*phi*(p+1)),R{p+1}});
+            if p+1 == Nsites 
+                [psiGround,Ekeep(end+1)] = eigLanczos(psiGround,OPTS,@doApplyMPO,{L{p},M+M1*cos(2*pi*ny/Nsites-2*pi*phi*(p)),MT,R{p+1}});
+            else
+                [psiGround,Ekeep(end+1)] = eigLanczos(psiGround,OPTS,@doApplyMPO,{L{p},M+M1*cos(2*pi*ny/Nsites-2*pi*phi*(p)),M+M1*cos(2*pi*ny/Nsites-2*pi*phi*(p+1)),R{p+1}});
+            end
         end
         [utemp,stemp,vtemp] = svd(reshape(psiGround,[chil*chid,chid*chir]),'econ');
         chitemp = min(min(size(stemp)),chimax);
@@ -118,7 +131,7 @@ for k = 1:OPTS.numsweeps+1
         B{p+1} = reshape(vtemp(:,1:chitemp)',[chitemp,chid,chir]);
             
         %%%%% new block Hamiltonian
-        L{p+1} = ncon({L{p},M+M1*cos(2*pi*ny/Nsites-2*pi*phi*(p+1)),A{p},conj(A{p})},{[2,1,4],[2,-1,3,5],[4,5,-3],[1,3,-2]});
+        L{p+1} = ncon({L{p},M+M1*cos(2*pi*ny/Nsites-2*pi*phi*(p)),A{p},conj(A{p})},{[-1,2,1,4],[2,-2,3,5],[4,5,-4],[1,3,-3]});
         
         %%%%% display energy
         if OPTS.display == 2
@@ -144,8 +157,8 @@ sWeight{Nsites+1} = eye(size(A{Nsites},3));
 function psi = doApplyMPO(psi,L,M1,M2,R)
 % applies the superblock MPO to the state
 
-psi = reshape(ncon({reshape(psi,[size(L,3),size(M1,4),size(M2,4),size(R,3)]),L,M1,M2,R},...
-    {[1,3,5,7],[2,-1,1],[2,4,-2,3],[4,6,-3,5],[6,-4,7]}),[size(L,3)*size(M1,4)*size(M2,4)*size(R,3),1]);
+psi = reshape(ncon({reshape(psi,[size(L,4),size(M1,4),size(M2,4),size(R,4)]),L,M1,M2,R},...
+    {[1,3,5,7],[8,2,-1,1],[2,4,-2,3],[4,6,-3,5],[8,6,-4,7]}),[size(L,4)*size(M1,4)*size(M2,4)*size(R,4),1]);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
