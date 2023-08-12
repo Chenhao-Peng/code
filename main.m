@@ -30,7 +30,7 @@ U=1;
 tx=0.25;
 mu=0.25;
 
-x=1.0;
+x=0;
 ty = sin(pi/2*x);
 U=cos(pi/2*x);
 [A,sWeight,B,E] = BH(U,tx,ty,mu,ny,Nsites,locald,phi,chi);
