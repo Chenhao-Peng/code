@@ -1,7 +1,7 @@
 locald=15;
 Nsites=10;
 chi = 10;
-ty=0;
+ty=1;
 ny=0;
 phi=0;
 U=0;

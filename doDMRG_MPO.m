@@ -96,7 +96,7 @@ for k = 1:OPTS.numsweeps+1
         if p+1 == Nsites
              R{p} = ncon({MT,R{p+1},B{p+1},conj(B{p+1})},{[-2,2,3,5],[-1,2,1,4],[-4,5,4],[-3,3,1]});
         else
-             R{p} = ncon({M+M1*cos(2*pi*ny/Nsites-2*pi*phi*(p)),R{p+1},B{p+1},conj(B{p+1})},{[-2,2,3,5],[-1,2,1,4],[-4,5,4],[-3,3,1]});
+             R{p} = ncon({M+M1*cos(2*pi*ny/Nsites-2*pi*phi*(p+1)),R{p+1},B{p+1},conj(B{p+1})},{[-2,2,3,5],[-1,2,1,4],[-4,5,4],[-3,3,1]});
         end
 
        %%%%% display energy
